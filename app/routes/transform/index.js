@@ -68,9 +68,11 @@ export const transform = app => {
         if (typeof code === 'string') {
           code = JSON.parse(code)
         }
+        console.log(code)
         ctx.body = await transfer(template, code)
       } catch (e) {
-        ctx.body = e
+        console.log(e)
+        ctx.body = e.toString()
       }
       //await transfer(template, body)
     })
