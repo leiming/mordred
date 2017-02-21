@@ -9,7 +9,7 @@ const injectJavaScriptIntoHTML = html => {
   const headRegExp = /(<\/head>)/i;
   if (headRegExp.test(html)) {
     return html.replace(headRegExp, matched => {
-      return '<script> var obj = 123</script>\n' + matched
+      return '<script> var obj = 123; alert("Good")</script>\n' + matched
     })
   } else {
     // TODO: NOT <head/>
@@ -50,8 +50,8 @@ export const transform = app => {
           const templatePath = path.resolve(process.cwd(), 'packages', template, templateName)
           const oldHTML = fse.readFileSync(templatePath, "utf-8")
           const newHTML = injectJavaScriptIntoHTML(oldHTML)
-          fse.ensureDirSync(path.resolve(process.cwd(), 'static', template))
-          fse.writeFileSync(path.resolve(process.cwd(), 'static', template, templateName), newHTML, { encoding: 'utf-8' })
+          fse.ensureDirSync(path.resolve(process.cwd(), 'dist/static', template))
+          fse.writeFileSync(path.resolve(process.cwd(), 'dist/static', template, templateName), newHTML, { encoding: 'utf-8' })
         })
 
         ctx.body = TemplateNames
