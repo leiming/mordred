@@ -7,17 +7,22 @@
   "author": "leiming <poetcoders@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --exec babel-node -- index.js"
+    "start": "nodemon --exec babel-node -- index.js",
+    "test": "jest"
   },
   "dependencies": {
     "babel-cli": "^6.23.0",
     "babel-preset-latest": "^6.22.0",
     "babel-runtime": "^6.23.0",
+    "fs-extra": "^2.0.0",
+    "glob": "^7.1.1",
     "koa": "next",
+    "koa-router": "next",
     "webpack": "^2.2.1"
   },
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
+    "jest": "^18.1.0",
     "nodemon": "^1.11.0"
   }
 }
