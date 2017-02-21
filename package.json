@@ -17,8 +17,10 @@
     "fs-extra": "^2.0.0",
     "glob": "^7.1.1",
     "koa": "next",
+    "koa-bodyparser": "next",
     "koa-router": "next",
-    "koa-static": "^2.1.0",
+    "koa-static": "next",
+    "stringify-object": "^3.1.0",
     "webpack": "^2.2.1"
   },
   "devDependencies": {
