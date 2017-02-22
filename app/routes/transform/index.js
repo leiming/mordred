@@ -16,7 +16,6 @@ const injectJavaScriptIntoHTML = (html, obj = {}) => {
   }
 }
 
-
 const transfer = (template, obj) => new Promise(async(resolve, reject) => {
   const TemplateNames = await getTemplateNames(template)
   if (!TemplateNames.length) {
@@ -53,7 +52,6 @@ export const transform = app => {
   const router = new Router({
     prefix: '/transform'
   })
-
 
   router.post('/:template', async(ctx, next) => {
     const body = ctx.request.body
