@@ -4,6 +4,8 @@ A node server to generate online page
 
 ## Install
 
+Use the below script:
+
 ```bash
 $ cd mordred
 $ yarn install
@@ -53,3 +55,25 @@ http://localhost:7777/transform/basic/{"cccc":1111}
 
 Then, visit result:
 > http://localhost:7777/static/basic
+
+### Get Template list
+
+```bash
+http://localhost:7777/templates
+```
+
+output:
+```json
+[
+    {
+        "name": "Advanced html",
+        "title": "Second Page",
+        "previewImage": "http://statics.techuangyi.com/uploadfile/2015/07/26/ae70614dca8eaf859f4fe4f85e7847df.jpg"
+    },
+    {
+        "name": "basic html",
+        "title": "First Page",
+        "previewImage": "http://img.zcool.cn/community/017e4256c423d16ac7256cb0e35226.jpg"
+    }
+]
+```

@@ -20,7 +20,12 @@ export const template = app => {
     const files = await getPackages()
     console.log(files)
     // TODO: readFile
-    ctx.body = JSON.stringify(files)
+    if (files.length) {
+      const packages = files.map(file => {
+        return fse.readJSONSync(path.resolve(packagesPath, file), 'utf-8')
+      })
+      ctx.body = packages
+    }
   })
 
   app.use(router.routes())
