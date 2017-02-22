@@ -17,6 +17,7 @@ export const template = app => {
   })
 
   router.get('/', async(ctx, next) => {
+    console.log(ctx.request.header)
     const files = await getPackages()
     console.log(files)
     // TODO: readFile
