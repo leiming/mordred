@@ -19,7 +19,7 @@ const injectJavaScriptIntoHTML = (html, obj = {}) => {
 const transfer = (template, obj) => new Promise(async(resolve, reject) => {
   const TemplateNames = await getTemplateNames(template)
   if (!TemplateNames.length) {
-    return ctx.body = `The template of ${template} could not find any html files.`
+    return reject(`The template of ${template} could not find any html files.`)
   } else {
     TemplateNames.map(templateName => {
       const templatePath = path.resolve(process.cwd(), 'packages', template, templateName)
@@ -56,7 +56,20 @@ export const transform = app => {
   router.post('/:template', async(ctx, next) => {
     const body = ctx.request.body
     let { template, code } = ctx.params
-    await transfer(template, body)
+
+    try {
+      const res = await transfer(template, body)
+      ctx.body = {
+        data: res,
+        status: 200,
+      }
+    } catch(e) {
+      console.log(e)
+      ctx.body = {
+        data: 'error',
+        status: 500,
+      }
+    }
   })
 
   router.get('/:template/:code',

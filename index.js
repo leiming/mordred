@@ -11,8 +11,8 @@ app.use(cors())
 app.use(serve('dist'))
 app.use(bodyParser())
 
-
 transform(app)
+
 templates(app)
 
 if (!module.parent) app.listen(port)
