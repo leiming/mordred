@@ -23,7 +23,7 @@ export const template = app => {
       const packages = files.map(file => {
         return fse.readJSONSync(path.resolve(packagesPath, file), 'utf-8')
       })
-      ctx.body = packages
+      ctx.response.body = packages
     }
   })
 
