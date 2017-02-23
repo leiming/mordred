@@ -17,13 +17,22 @@ const injectJavaScriptIntoHTML = (html, obj = {}) => {
 }
 
 const transfer = (template, obj) => new Promise(async(resolve, reject) => {
+  const temlatePath = path.resolve(process.cwd(), 'packages', template);
+  try {
+    fse.copySync(temlatePath, path.resolve(process.cwd(), 'dist/static', template))
+    console.log('copy file success.')
+  } catch (e) {
+    return reject('copy file failed.')
+  }
+
+  // TODO 只是读取除了html文件
   const TemplateNames = await getTemplateNames(template)
   if (!TemplateNames.length) {
     return reject(`The template of ${template} could not find any html files.`)
   } else {
     TemplateNames.map(templateName => {
-      const templatePath = path.resolve(process.cwd(), 'packages', template, templateName)
-      const oldHTML = fse.readFileSync(templatePath, "utf-8")
+      const templateHtmlPath = path.resolve(process.cwd(), 'packages', template, templateName)
+      const oldHTML = fse.readFileSync(templateHtmlPath, "utf-8")
       const newHTML = injectJavaScriptIntoHTML(oldHTML, obj)
       fse.ensureDirSync(path.resolve(process.cwd(), 'dist/static', template))
       fse.writeFileSync(path.resolve(process.cwd(), 'dist/static', template, templateName), newHTML, { encoding: 'utf-8' })
