@@ -4,6 +4,14 @@ import path from 'path'
 import process from 'process'
 import glob from 'glob'
 
+const getResult = (data = "", msg = "OK", status = 200) => {
+  const result = {
+    status,
+    msg,
+  }
+  return data ? { ...result, data: data } : result
+}
+
 const injectJavaScriptIntoHTML = (html, obj = {}) => {
   const headRegExp = /(<\/head>)/i;
   if (headRegExp.test(html)) {
@@ -36,7 +44,7 @@ const transfer = (template, obj) => new Promise(async(resolve, reject) => {
       const newHTML = injectJavaScriptIntoHTML(oldHTML, obj)
       fse.ensureDirSync(path.resolve(process.cwd(), 'dist/static', template))
       fse.writeFileSync(path.resolve(process.cwd(), 'dist/static', template, templateName), newHTML, { encoding: 'utf-8' })
-      return resolve('OK')
+      return resolve(getResult({ aaa: 123 }))
     })
   }
 })
@@ -62,23 +70,19 @@ export const transform = app => {
     prefix: '/transform'
   })
 
+  // TODO : 不叫这个名字
   router.post('/:template', async(ctx, next) => {
     const body = ctx.request.body
     let { template, code } = ctx.params
 
     try {
       const res = await transfer(template, body)
-      ctx.body = {
-        data: res,
-        status: 200,
-      }
-    } catch(e) {
-      console.log(e)
-      ctx.body = {
-        data: 'error',
-        status: 500,
-      }
+      return ctx.body = getResult(res)
+    } catch (e) {
+      //console.log(e)
+      return ctx.body = getResult(null, e.message, 500)
     }
+
   })
 
   router.get('/:template/:code',
