@@ -89,18 +89,15 @@ export const transform = app => {
       }
     })
 
-  // TODO : 不叫这个名字
   router.post('/:template', async(ctx, next) => {
     const codeData = ctx.request.body
     let { template } = ctx.params
     try {
       const res = await transfer(template, codeData)
-      return ctx.body = getResult(res)
+      return ctx.body = res
     } catch (e) {
-      //console.log(e)
       return ctx.body = getResult(null, e.message, 500)
     }
-
   })
 
   router.get('/',

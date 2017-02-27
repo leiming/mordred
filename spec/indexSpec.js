@@ -57,8 +57,17 @@ describe('Transform GET method', () => {
 describe('Transform POST method', () => {
 
   it('should send data by body', done => {
-    request.post('/transform/basic')
+    request
+      .post('/transform/basic')
+      .send({
+        foo: "bar"
+      })
       .expect(200)
+      .expect({
+        status: 200,
+        msg: "OK",
+        data: { foo: "bar" },
+      })
       .end(finishTest(done))
   })
 
