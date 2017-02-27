@@ -2,9 +2,9 @@ const app = require('../src/index')
 const request = require('supertest').agent(app.listen())
 const finishTest = require('./helpers/finishTest')
 
-describe('request', () => {
+describe('Transform GET method', () => {
 
-  it('Get template list', (done) => {
+  it('should get template list', done => {
     request.get('/templates')
       .expect(200)
       .expect('content-type', 'application/json; charset=utf-8')
@@ -14,22 +14,52 @@ describe('request', () => {
       .end(finishTest(done))
   })
 
-  it('Transform by GET method', (done) => {
-    request.get('/transform/basic/{"aaa":123}')
+  it('should transform by GET method', done => {
+    request.get('/transform/basic/{"bar":"foo"}')
       .expect(200)
       .expect('content-type', 'application/json; charset=utf-8')
       .expect({
         "status": 200,
         "msg": "OK",
         "data": {
-          "aaa": 123
+          "bar": "foo"
         }
       })
       .end(finishTest(done))
   })
 
+  it('should get empty directory', done => {
+    request.get('/transform/basic')
+      .expect(200)
+      .expect({
+        "status": 404,
+        "msg": '/transform/:template/:code, code is empty in GET method'
+      })
+      .end(finishTest(done))
+  })
 
-  it('404', (done) => {
+  it('should return 404 when HTML file exists', done => {
+    request.get('/transform/not-html-case/{"bar": "foo"}')
+      .expect(200)
+      .expect({
+        "status": 404,
+        "msg": "Template should contain least one HTML file"
+      })
+      .end(finishTest(done))
+  })
+
+  it('404', done => {
     request.get('/404').expect(404).end(finishTest(done))
   })
+
+})
+
+describe('Transform POST method', () => {
+
+  it('should send data by body', done => {
+    request.post('/transform/basic')
+      .expect(200)
+      .end(finishTest(done))
+  })
+
 })

@@ -1,16 +1,9 @@
 import Router from 'koa-router'
 import fse from 'fs-extra'
-import path from 'path'
-import process from 'process'
-import glob from 'glob'
+import paths, { resolve } from '../../utils/paths'
+import { getResult } from '../../utils/responses'
 
-const getResult = (data = "", msg = "OK", status = 200) => {
-  const result = {
-    status,
-    msg,
-  }
-  return data ? { ...result, data: data } : result
-}
+import glob from 'glob'
 
 const injectJavaScriptIntoHTML = (html, obj = {}) => {
   const headRegExp = /(<\/head>)/i;
@@ -24,45 +17,53 @@ const injectJavaScriptIntoHTML = (html, obj = {}) => {
   }
 }
 
-const transfer = (template, obj) => new Promise(async(resolve, reject) => {
-  const temlatePath = path.resolve(process.cwd(), 'packages', template);
+const generateHTML = (template, templateName, obj) => {
+  const templateHtmlPath = resolve(paths.packages, template, templateName)
+  const oldHTML = fse.readFileSync(templateHtmlPath, "utf-8")
+  const newHTML = injectJavaScriptIntoHTML(oldHTML, obj)
+  fse.ensureDirSync(resolve(paths.statics, template))
+  fse.writeFileSync(resolve(paths.statics, template, templateName), newHTML, { encoding: 'utf-8' })
+}
+
+
+const isDirectory = (pathString) => {
   try {
-    fse.copySync(temlatePath, path.resolve(process.cwd(), 'dist/static', template))
-    console.log('copy file success.')
+    return fse.statSync(pathString).isDirectory()
   } catch (e) {
-    return reject('copy file failed.')
+    return false
+  }
+}
+
+const transfer = (template, obj) => {
+
+  if (!template) {
+    return getResult(null, 'Template is null', 404)
   }
 
-  // TODO 只是读取除了html文件
-  const TemplateNames = await getTemplateNames(template)
-  if (!TemplateNames.length) {
-    return reject(`The template of ${template} could not find any html files.`)
-  } else {
-    TemplateNames.map(templateName => {
-      const templateHtmlPath = path.resolve(process.cwd(), 'packages', template, templateName)
-      const oldHTML = fse.readFileSync(templateHtmlPath, "utf-8")
-      const newHTML = injectJavaScriptIntoHTML(oldHTML, obj)
-      fse.ensureDirSync(path.resolve(process.cwd(), 'dist/static', template))
-      fse.writeFileSync(path.resolve(process.cwd(), 'dist/static', template, templateName), newHTML, { encoding: 'utf-8' })
-      return resolve(getResult({ aaa: 123 }))
-    })
+  if (!isDirectory(resolve(paths.packages, template))) {
+    return getResult(null, 'Template is not directory', 404)
   }
-})
+
+  fse.copySync(resolve(paths.packages, template), resolve(paths.statics, template))
+
+  const templateNames = getTemplateNames(template)
+  if (!templateNames.length) {
+    return getResult(null, "Template should contain least one HTML file", 404)
+  }
+
+  templateNames.map(templateName => {
+    return generateHTML(template, templateName, obj)
+  })
+  return getResult(obj)
+}
+
 
 /**
  * @param template
  * @return promise
  */
-const getTemplateNames = template => new Promise((resolve, reject) => {
-  glob('*.html', {
-    cwd: path.resolve(process.cwd(), 'packages', template)
-  }, (err, files) => {
-    if (err) {
-      return reject(err)
-    } else {
-      return resolve(files)
-    }
-  })
+const getTemplateNames = template => glob.sync('*.html', {
+  cwd: resolve(paths.packages, template)
 })
 
 export const transform = app => {
@@ -70,19 +71,8 @@ export const transform = app => {
     prefix: '/transform'
   })
 
-  // TODO : 不叫这个名字
-  router.post('/:template', async(ctx, next) => {
-    const body = ctx.request.body
-    let { template, code } = ctx.params
-
-    try {
-      const res = await transfer(template, body)
-      return ctx.body = getResult(res)
-    } catch (e) {
-      //console.log(e)
-      return ctx.body = getResult(null, e.message, 500)
-    }
-
+  router.get('/:template', async(ctx, next) => {
+    ctx.body = getResult(null, '/transform/:template/:code, code is empty in GET method', 404)
   })
 
   router.get('/:template/:code',
@@ -92,14 +82,26 @@ export const transform = app => {
         if (typeof code === 'string') {
           code = JSON.parse(code)
         }
-        console.log(code)
-        ctx.body = await transfer(template, code)
+        ctx.body = transfer(template, code)
       } catch (e) {
         console.log(e)
         ctx.body = e.toString()
       }
-      //await transfer(template, body)
     })
+
+  // TODO : 不叫这个名字
+  router.post('/:template', async(ctx, next) => {
+    const codeData = ctx.request.body
+    let { template } = ctx.params
+    try {
+      const res = await transfer(template, codeData)
+      return ctx.body = getResult(res)
+    } catch (e) {
+      //console.log(e)
+      return ctx.body = getResult(null, e.message, 500)
+    }
+
+  })
 
   router.get('/',
     async(ctx, next) => {
