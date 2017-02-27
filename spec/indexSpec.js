@@ -16,13 +16,14 @@ describe('Transform GET method', () => {
 
   it('should transform by GET method', done => {
     request.get('/transform/basic/{"bar":"foo"}')
-      .expect(200)
+
       .expect('content-type', 'application/json; charset=utf-8')
-      .expect({
-        "status": 200,
-        "msg": "OK",
-        "data": {
-          "bar": "foo"
+      .expect(200, {
+        status: 200,
+        msg: "OK",
+        data: {
+          previewPage: "/static/basic",
+          globalData: { "bar": "foo" }
         }
       })
       .end(finishTest(done))
@@ -30,8 +31,7 @@ describe('Transform GET method', () => {
 
   it('should get empty directory', done => {
     request.get('/transform/basic')
-      .expect(200)
-      .expect({
+      .expect(200, {
         "status": 404,
         "msg": '/transform/:template/:code, code is empty in GET method'
       })
@@ -40,8 +40,7 @@ describe('Transform GET method', () => {
 
   it('should return 404 when HTML file exists', done => {
     request.get('/transform/not-html-case/{"bar": "foo"}')
-      .expect(200)
-      .expect({
+      .expect(200, {
         "status": 404,
         "msg": "Template should contain least one HTML file"
       })
@@ -56,19 +55,31 @@ describe('Transform GET method', () => {
 
 describe('Transform POST method', () => {
 
+  const templateName = 'basic'
+  const globalData = {
+    foo: "bar"
+  }
+
   it('should send data by body', done => {
     request
-      .post('/transform/basic')
-      .send({
-        foo: "bar"
-      })
-      .expect(200)
-      .expect({
+      .post(`/transform/${templateName}`)
+      .send(globalData)
+      .expect(200, {
         status: 200,
         msg: "OK",
-        data: { foo: "bar" },
+        data: {
+          previewPage: `/static/${templateName}`,
+          globalData: globalData,
+        }
       })
-      .end(finishTest(done))
+      .end((err, res) => {
+        const { previewPage } = res.body.data
+        request.get(previewPage)
+          .expect(200, (err, res) => {
+            expect(res.text).toMatch(JSON.stringify(globalData, null, 2))
+            done()
+          })
+      })
   })
 
 })

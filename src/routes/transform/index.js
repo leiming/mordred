@@ -54,7 +54,11 @@ const transfer = (template, obj) => {
   templateNames.map(templateName => {
     return generateHTML(template, templateName, obj)
   })
-  return getResult(obj)
+
+  return getResult({
+    previewPage: `/static/${template}`,
+    globalData: obj,
+  })
 }
 
 
