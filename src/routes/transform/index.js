@@ -2,6 +2,7 @@ import Router from 'koa-router'
 import fse from 'fs-extra'
 import paths, { resolve } from '../../utils/paths'
 import { getResult } from '../../utils/responses'
+import {isDirectory} from '../../utils/params'
 
 import glob from 'glob'
 
@@ -26,13 +27,7 @@ const generateHTML = (template, templateName, obj) => {
 }
 
 
-const isDirectory = (pathString) => {
-  try {
-    return fse.statSync(pathString).isDirectory()
-  } catch (e) {
-    return false
-  }
-}
+
 
 const transfer = (template, obj) => {
 

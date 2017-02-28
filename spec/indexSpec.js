@@ -2,8 +2,7 @@ const app = require('../src/index')
 const request = require('supertest').agent(app.listen())
 const finishTest = require('./helpers/finishTest')
 
-describe('Transform GET method', () => {
-
+describe('Template GET method', () => {
   it('should get template list', done => {
     request.get('/templates')
       .expect(200)
@@ -13,6 +12,10 @@ describe('Transform GET method', () => {
       })
       .end(finishTest(done))
   })
+})
+
+
+describe('Transform GET method', () => {
 
   it('should transform by GET method', done => {
     request.get('/transform/basic/{"bar":"foo"}')
@@ -38,7 +41,7 @@ describe('Transform GET method', () => {
       .end(finishTest(done))
   })
 
-  it('should return 404 when HTML file exists', done => {
+  it('should not visit when HTML file exists', done => {
     request.get('/transform/not-html-case/{"bar": "foo"}')
       .expect(200, {
         "status": 404,
@@ -47,7 +50,7 @@ describe('Transform GET method', () => {
       .end(finishTest(done))
   })
 
-  it('should return 404 when visit undefined router', done => {
+  it('should return 404 response when visit undefined router', done => {
     request.get('/404').expect(404).end(finishTest(done))
   })
 
