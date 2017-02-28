@@ -47,7 +47,7 @@ describe('Transform GET method', () => {
       .end(finishTest(done))
   })
 
-  it('404', done => {
+  it('should return 404 when visit undefined router', done => {
     request.get('/404').expect(404).end(finishTest(done))
   })
 
@@ -59,6 +59,16 @@ describe('Transform POST method', () => {
   const globalData = {
     foo: "bar"
   }
+
+  it('should not send non-existent template', done => {
+    request.post(`/transform/not-exist`)
+      .send(globalData)
+      .expect(200, {
+        status: 404,
+        msg: 'Template is not directory',
+      })
+      .end(finishTest(done))
+  })
 
   it('should send data by body', done => {
     request

@@ -16,7 +16,5 @@ transform(app)
 templates(app)
 
 
-
-
 if (!module.parent) app.listen(port);
-//console.log(`\nhttp://localhost:${port}/\n`)
+console.log(`\nhttp://localhost:${port}/\n`)
