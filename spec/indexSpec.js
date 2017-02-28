@@ -2,6 +2,8 @@ const app = require('../src/index')
 const request = require('supertest').agent(app.listen())
 const finishTest = require('./helpers/finishTest')
 
+
+
 describe('Template GET method', () => {
   it('should get template list', done => {
     request.get('/templates')

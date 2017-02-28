@@ -2,5 +2,37 @@
   "id": "3",
   "name": "html5-fruit-ninja",
   "title": "fruit-ninja",
-  "previewImage": "http://img.zcool.cn/community/017e4256c423d16ac7256cb0e35226.jpg"
+  "previewImage": "http://img.zcool.cn/community/017e4256c423d16ac7256cb0e35226.jpg",
+  "configFields": {
+    "field1": {
+      "label": "页面标题",
+      "type": "number",
+      "value": "demo1",
+      "max-len": 100,
+      "min-len": 10,
+      "require": true,
+      "desc": "this is description"
+    },
+    "field2": {
+      "label": "页面描述",
+      "type": "string",
+      "value": "demo2",
+      "require": true,
+      "desc": "this is description"
+    },
+    "field3": {
+      "label": "页面描述",
+      "type": "string",
+      "value": "demo2",
+      "require": true,
+      "desc": "this is description"
+    },
+    "field4": {
+      "label": "页面描述",
+      "type": "string",
+      "value": "demo2",
+      "require": true,
+      "desc": "this is description"
+    }
+  }
 }
