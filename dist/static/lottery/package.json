@@ -1,0 +1,17 @@
+{
+  "id": "4",
+  "name": "lottery",
+  "title": "lottery",
+  "previewImage": "http://img.zcool.cn/community/017e4256c423d16ac7256cb0e35226.jpg",
+  "configFields": {
+    "lotteryCount": {
+      "label": "抽奖次数",
+      "type": "number",
+      "value": 1,
+      "max-len": 10,
+      "min-len": 1,
+      "require": true,
+      "desc": "设置允许用户可抽奖的次数"
+    }
+  }
+}

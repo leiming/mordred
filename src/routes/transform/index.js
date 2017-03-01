@@ -10,7 +10,7 @@ const injectJavaScriptIntoHTML = (html, obj = {}) => {
   const headRegExp = /(<\/head>)/i;
   if (headRegExp.test(html)) {
     return html.replace(headRegExp, matched => {
-      return `<script>\nvar obj = ${JSON.stringify(obj, null, 2)}\n</script>\n` + matched
+      return `<script>\nvar __GLOBAL__ = ${JSON.stringify(obj, null, 2)}\n</script>\n` + matched
     })
   } else {
     // TODO: NOT <head/>
