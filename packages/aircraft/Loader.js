@@ -110,8 +110,6 @@ function itemLoaded(item) {
   g_context.fillRect(35, 220, width, 40);
 }
 
-console.log(11111111)
-console.log(itemLoaded)
 
 //
 // Called the first time loadItem is invoked while the body is loading

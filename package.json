@@ -1,6 +1,6 @@
 {
   "name": "mordred",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A node server to generate online page",
   "main": "src/index.js",
   "repository": "git@github.com:leiming/mordred.git",
